@@ -3,22 +3,19 @@
 {% block content %}
 <h1>Local Library Home</h1>
 
-<p>Welcome to <em>LocalLibrary</em>, a very basic Django website developed as a <a href="https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/Tutorial_local_library_website">tutorial example</a> on the Mozilla Developer Network.</p>
-<p>The tutorial demonstrates how to create a Django skeleton website and application, define URL mappings, views (including Generic List and Detail Views), models and templates.</p>
+<p>Добро пожаловать в <em>LocalLibrary</em>, на сайт, посвященный нашей дипломной работе на тему "Библиотека"!</p>
+<p>Здесь мы приглашаем вас окунуться в мир слов и знаний, который мы тщательно изучаем и исследуем в рамках нашего проекта. Этот сайт — не просто виртуальная библиотека, а настоящий комплексный ресурс, созданный с целью осветить различные аспекты и значения библиотек в современном обществе.</p>
+
+<p>Мы уверены, что наши исследования, анализы и выводы окажутся полезными и интересными для всех, кто интересуется ролью библиотек в современном мире, их историей, функциями и перспективами развития.</p>
+
+<p>Добро пожаловать в мир исследований и увлекательных открытий!</p>
 
 
-<h2>UML Models</h2>
-<p>An UML diagram of the site's Django model structure is shown below. </p>
-
-<div>
-{% load static %}
-<img src="{% static 'images/local_library_model_uml.png' %}" alt="My image" width="600px">
-</div>  
 
 
 <h2>Dynamic content</h2>
 
-<p>The library has the following record counts:</p>
+<p>В библиотеке имеется следующее количество записей:</p>
 <ul>
 <li><strong>Books:</strong> {{ num_books }}</li>
 <li><strong>Copies:</strong> {{ num_instances }}</li>
@@ -27,6 +24,6 @@
 </ul>
 
 
-<p>You have visited this page {{ num_visits }} time{{ num_visits|pluralize }}.</p>
+<p>Вы посетили эту страницу {{ num_visits }} раз{{ num_visits|pluralize }}.</p>
 
 {% endblock %}
