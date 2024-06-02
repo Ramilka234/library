@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 
@@ -87,7 +87,7 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return (
             BookInstance.objects.filter(borrower=self.request.user)
-            .filter(status__exact='o')
+            .filter(status__in=['o', 'r'])
             .order_by('due_back')
         )
 
@@ -103,14 +103,14 @@ class LoanedBooksAllListView(PermissionRequiredMixin, generic.ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
+        return BookInstance.objects.filter(status__in=['o', 'r']).order_by('due_back')
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import datetime
 from django.contrib.auth.decorators import login_required, permission_required
-from catalog.forms import RenewBookForm
+from catalog.forms import RenewBookForm, SignUpForm, BookInstanceForm, ReserveBookForm
 
 
 @login_required
@@ -246,9 +246,8 @@ class LanguageDelete(PermissionRequiredMixin, DeleteView):
 
 class BookInstanceCreate(PermissionRequiredMixin, CreateView):
     model = BookInstance
-    fields = ['book', 'imprint', 'due_back', 'borrower', 'status']
+    form_class = BookInstanceForm
     permission_required = 'catalog.add_bookinstance'
-
 
 class BookInstanceUpdate(PermissionRequiredMixin, UpdateView):
     model = BookInstance
@@ -261,3 +260,37 @@ class BookInstanceDelete(PermissionRequiredMixin, DeleteView):
     model = BookInstance
     success_url = reverse_lazy('bookinstances')
     permission_required = 'catalog.delete_bookinstance'
+
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+
+def signup(request):
+  if request.method == 'POST':
+    form = SignUpForm(request.POST)
+    if form.is_valid():
+      form.save()
+      username = form.cleaned_data.get('username')
+      raw_password = form.cleaned_data.get('password1')
+      user = authenticate(username=username, password=raw_password)
+      login(request, user)
+      return redirect('index')
+  else:
+    form = SignUpForm()
+  return render(request, 'registration/signup.html', {'form': form})
+
+@login_required
+def reserve_book(request, pk):
+    book_instance = get_object_or_404(BookInstance, pk=pk)
+
+    if request.method == 'POST':
+        form = ReserveBookForm(request.POST)
+        if form.is_valid():
+            book_instance.due_back = form.cleaned_data['due_back']
+            book_instance.borrower = request.user
+            book_instance.status = 'r'  # Устанавливаем статус "Reserved"
+            book_instance.save()
+            return redirect('my-borrowed')
+    else:
+        form = ReserveBookForm()
+
+    return render(request, 'catalog/reserve_book.html', {'form': form, 'book_instance': book_instance})

@@ -1,94 +1,103 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   {% block title %}<title>Local Library</title>{% endblock %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
 
 <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2 bg-light p-3">
+      {% block sidebar %}
+      <ul class="sidebar-nav nav flex-column">
+        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'bookinstances' %}">All book copies</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'books' %}">All books</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'authors' %}">All authors</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'genres' %}">All genres</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'languages' %}">All languages</a></li>
+      </ul>
 
-<div class="row">
-  <div class="col-sm-2">
-  {% block sidebar %}
-  <ul class="sidebar-nav">
-    <li><a href="{% url 'index' %}">Home</a></li>
-    <li><a href="{% url 'bookinstances' %}">All book copies</a></li>
-    <li><a href="{% url 'books' %}">All books</a></li>
-    <li><a href="{% url 'authors' %}">All authors</a></li>
-    <li><a href="{% url 'genres' %}">All genres</a></li>
-    <li><a href="{% url 'languages' %}">All languages</a></li>
-  </ul>
+      <ul class="sidebar-nav nav flex-column mt-3">
+       {% if user.is_authenticated %}
+         <li class="nav-item">User: {{ user.get_username }}</li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'my-borrowed' %}">My borrowed</a></li>
+         <li class="nav-item">
+           <form id="logout-form" method="post" action="{% url 'logout' %}">
+             {% csrf_token %}
+             <button type="submit" class="btn btn-link nav-link">Logout</button>
+           </form>
+        </li>
+       {% else %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+       {% endif %}
+      </ul>
 
-  <ul class="sidebar-nav">
-   {% if user.is_authenticated %}
-     <li>User: {{ user.get_username }}</li>
-     <li><a href="{% url 'my-borrowed' %}">My borrowed</a></li>
-     <li>
-       <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
-         {% csrf_token %}
-         <button type="submit" class="btn btn-link">Logout</button>
-       </form>
-    </li>
-   {% else %}
-     <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
-   {% endif %}
-  </ul>
+       {% if user.is_staff %}
+       <hr>
+       <ul class="sidebar-nav nav flex-column">
+       <li class="nav-item">Staff</li>
+       <li class="nav-item"><a class="nav-link" href="{% url 'all-borrowed' %}">All borrowed</a></li>
+       {% if perms.catalog.add_genre %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'genre-create' %}">Create genre</a></li>
+       {% endif %}
+       {% if perms.catalog.add_language %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'language-create' %}">Create language</a></li>
+       {% endif %}
+       {% if perms.catalog.add_author %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'author-create' %}">Create author</a></li>
+       {% endif %}
+       {% if perms.catalog.add_book %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'book-create' %}">Create book</a></li>
+       {% endif %}
+       {% if perms.catalog.add_bookinstance %}
+         <li class="nav-item"><a class="nav-link" href="{% url 'bookinstance-create' %}">Create copy of book</a></li>
+       {% endif %}
+       </ul>
+       {% endif %}
 
-   {% if user.is_staff %}
-   <hr>
-   <ul class="sidebar-nav">
-   <li>Staff</li>
-   <li><a href="{% url 'all-borrowed' %}">All borrowed</a></li>
-   {% if perms.catalog.add_genre %}
-     <li><a href="{% url 'genre-create' %}">Create genre</a></li>
-   {% endif %}
-   {% if perms.catalog.add_language %}
-     <li><a href="{% url 'language-create' %}">Create language</a></li>
-   {% endif %}
-   {% if perms.catalog.add_author %}
-     <li><a href="{% url 'author-create' %}">Create author</a></li>
-   {% endif %}
-   {% if perms.catalog.add_book %}
-     <li><a href="{% url 'book-create' %}">Create book</a></li>
-   {% endif %}
-   {% if perms.catalog.add_bookinstance %}
-     <li><a href="{% url 'bookinstance-create' %}">Create copy of book</a></li>
-   {% endif %}
-   </ul>
-   {% endif %}
+      {% endblock %}
+    </div>
+    <div class="col-sm-10">
+          <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 
-{% endblock %}
-  </div>
-  <div class="col-sm-10 ">
-  {% block content %}{% endblock %}
-
-  {% block pagination %}
-    {% if is_paginated %}
-        <div class="pagination">
-            <span class="page-links">
+      {% block pagination %}
+        {% if is_paginated %}
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
                 {% if page_obj.has_previous %}
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                  <li class="page-item">
+                    <a class="page-link" href="{{ request.path }}?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                      <span aria-hidden="true">&laquo;</span>
+                    </a>
+                  </li>
                 {% endif %}
-                <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
+                <li class="page-item disabled">
+                  <a class="page-link" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a>
+                </li>
                 {% if page_obj.has_next %}
-                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                  <li class="page-item">
+                    <a class="page-link" href="{{ request.path }}?page={{ page_obj.next_page_number }}" aria-label="Next">
+                      <span aria-hidden="true">&raquo;</span>
+                    </a>
+                  </li>
                 {% endif %}
-            </span>
-        </div>
-    {% endif %}
-  {% endblock %}
+              </ul>
+            </nav>
+        {% endif %}
+      {% endblock %}
+    </div>
   </div>
-</div>
-
 </div>
 </body>
 </html>

@@ -11,7 +11,8 @@ class Genre(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Enter a book genre (e.g. Science Fiction, French Poetry etc.)"
+        help_text="Enter a book genre (e.g. Science Fiction, French Poetry etc.)",
+        verbose_name='Название'
     )
 
     def __str__(self):
@@ -35,7 +36,8 @@ class Language(models.Model):
 
     name = models.CharField(max_length=200,
                             unique=True,
-                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)")
+                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)",
+                            verbose_name='Название')
 
     def get_absolute_url(self):
 
@@ -56,20 +58,20 @@ class Language(models.Model):
 
 class Book(models.Model):
 
-    title = models.CharField(max_length=200)
-    author = models.ForeignKey('Author', on_delete=models.RESTRICT, null=True)
+    title = models.CharField(max_length=200, verbose_name='Название')
+    author = models.ForeignKey('Author', on_delete=models.RESTRICT, null=True, verbose_name='Автор')
 
     summary = models.TextField(
-        max_length=1000, help_text="Enter a brief description of the book")
+        max_length=1000, help_text="Напишите описание книги", verbose_name='Описание')
     isbn = models.CharField('ISBN', max_length=13,
                             unique=True,
-                            help_text='13 Character <a href="https://www.isbn-international.org/content/what-isbn'
-                                      '">ISBN number</a>')
+                            help_text='13 Символов <a href="https://www.isbn-international.org/content/what-isbn'
+                                      '">ISBN номера</a>')
     genre = models.ManyToManyField(
-        Genre, help_text="Select a genre for this book")
+        Genre, help_text="Выберите жанр для книги")
 
     language = models.ForeignKey(
-        'Language', on_delete=models.SET_NULL, null=True)
+        'Language', on_delete=models.SET_NULL, null=True, verbose_name='язык')
 
     class Meta:
         ordering = ['title', 'author']
@@ -99,11 +101,11 @@ class BookInstance(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
                           help_text="Unique ID for this particular book across whole library")
-    book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
-    imprint = models.CharField(max_length=200)
-    due_back = models.DateField(null=True, blank=True)
+    book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True, verbose_name='Книга')
+    imprint = models.CharField(max_length=200, verbose_name='Печать')
+    due_back = models.DateField(null=True, blank=True, verbose_name='Дата возврата')
     borrower = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='заемщик')
 
     @property
     def is_overdue(self):
@@ -111,10 +113,10 @@ class BookInstance(models.Model):
         return bool(self.due_back and date.today() > self.due_back)
 
     LOAN_STATUS = (
-        ('d', 'Maintenance'),
-        ('o', 'On loan'),
-        ('a', 'Available'),
-        ('r', 'Reserved'),
+        ('d', 'Обслуживание'),
+        ('o', 'В долг'),
+        ('a', 'Доступный'),
+        ('r', 'Зарезервирован'),
     )
 
     status = models.CharField(
@@ -122,7 +124,7 @@ class BookInstance(models.Model):
         choices=LOAN_STATUS,
         blank=True,
         default='d',
-        help_text='Book availability')
+        help_text='Книга доступна')
 
     class Meta:
         ordering = ['due_back']
@@ -133,7 +135,6 @@ class BookInstance(models.Model):
         return reverse('bookinstance-detail', args=[str(self.id)])
 
     def __str__(self):
-
         return f'{self.id} ({self.book.title})'
 
 
@@ -152,5 +153,5 @@ class Author(models.Model):
         return reverse('author-detail', args=[str(self.id)])
 
     def __str__(self):
-
+        """String for representing the Model object."""
         return f'{self.last_name}, {self.first_name}'
