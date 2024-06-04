@@ -62,14 +62,14 @@
 
 {% block content %}
 
-<h1>Language List</h1>
+<h1>Список языков</h1>
 
 <ul class="list">
   {% for language in language_list %}
     <a href="{{ language.get_absolute_url }}" class="item" >
       <div class="title">{{ language }}</div></a>
   {% empty %}
-  <li>There are no languages available.</li>
+  <li>Здесь нет доступных языков.</li>
   {% endfor %}
 </ul>
 

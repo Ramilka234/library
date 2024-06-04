@@ -16,49 +16,49 @@
     <div class="col-sm-2 bg-light p-3">
       {% block sidebar %}
       <ul class="sidebar-nav nav flex-column">
-        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'bookinstances' %}">All book copies</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'books' %}">All books</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'authors' %}">All authors</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'genres' %}">All genres</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'languages' %}">All languages</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Главная страница</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'bookinstances' %}">Список копии книг</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'books' %}">Список книг</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'authors' %}">Список авторов</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'genres' %}">Список жанров</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'languages' %}">Список языков</a></li>
       </ul>
 
       <ul class="sidebar-nav nav flex-column mt-3">
        {% if user.is_authenticated %}
          <li class="nav-item">User: {{ user.get_username }}</li>
-         <li class="nav-item"><a class="nav-link" href="{% url 'my-borrowed' %}">My borrowed</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'my-borrowed' %}">Мои позаимствованные книги</a></li>
          <li class="nav-item">
            <form id="logout-form" method="post" action="{% url 'logout' %}">
              {% csrf_token %}
-             <button type="submit" class="btn btn-link nav-link">Logout</button>
+             <button type="submit" class="btn btn-link nav-link">Выход</button>
            </form>
         </li>
        {% else %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Login</a></li>
-         <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'login'%}?next={{request.path}}">Вход</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Регистрация</a></li>
        {% endif %}
       </ul>
 
        {% if user.is_staff %}
        <hr>
        <ul class="sidebar-nav nav flex-column">
-       <li class="nav-item">Staff</li>
-       <li class="nav-item"><a class="nav-link" href="{% url 'all-borrowed' %}">All borrowed</a></li>
+       <li class="nav-item">Сотруднику</li>
+       <li class="nav-item"><a class="nav-link" href="{% url 'all-borrowed' %}">Все позаимствованные книги</a></li>
        {% if perms.catalog.add_genre %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'genre-create' %}">Create genre</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'genre-create' %}">Создать жанр</a></li>
        {% endif %}
        {% if perms.catalog.add_language %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'language-create' %}">Create language</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'language-create' %}">Создать язык</a></li>
        {% endif %}
        {% if perms.catalog.add_author %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'author-create' %}">Create author</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'author-create' %}">Создать автора</a></li>
        {% endif %}
        {% if perms.catalog.add_book %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'book-create' %}">Create book</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'book-create' %}">Создать книгу</a></li>
        {% endif %}
        {% if perms.catalog.add_bookinstance %}
-         <li class="nav-item"><a class="nav-link" href="{% url 'bookinstance-create' %}">Create copy of book</a></li>
+         <li class="nav-item"><a class="nav-link" href="{% url 'bookinstance-create' %}">Создать копию книги</a></li>
        {% endif %}
        </ul>
        {% endif %}

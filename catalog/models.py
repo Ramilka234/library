@@ -11,7 +11,7 @@ class Genre(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        help_text="Enter a book genre (e.g. Science Fiction, French Poetry etc.)",
+        help_text="Укажите жанр книги (например, научная фантастика, французская поэзия и т.д.).",
         verbose_name='Название'
     )
 
@@ -28,7 +28,7 @@ class Genre(models.Model):
             UniqueConstraint(
                 Lower('name'),
                 name='genre_name_case_insensitive_unique',
-                violation_error_message = "Genre already exists (case insensitive match)"
+                violation_error_message = "Жанр уже существует (совпадение без учета регистра)"
             ),
         ]
 
@@ -36,7 +36,7 @@ class Language(models.Model):
 
     name = models.CharField(max_length=200,
                             unique=True,
-                            help_text="Enter the book's natural language (e.g. English, French, Japanese etc.)",
+                            help_text="Введите естественный язык книги (например, английский, французский, японский и т.д.).",
                             verbose_name='Название')
 
     def get_absolute_url(self):
@@ -52,7 +52,7 @@ class Language(models.Model):
             UniqueConstraint(
                 Lower('name'),
                 name='language_name_case_insensitive_unique',
-                violation_error_message = "Language already exists (case insensitive match)"
+                violation_error_message = "Язык уже существует (соответствие без учета регистра)"
             ),
         ]
 
@@ -100,7 +100,7 @@ from django.conf import settings
 class BookInstance(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4,
-                          help_text="Unique ID for this particular book across whole library")
+                          help_text="Уникальный идентификатор для этой конкретной книги во всей библиотеке")
     book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True, verbose_name='Книга')
     imprint = models.CharField(max_length=200, verbose_name='Печать')
     due_back = models.DateField(null=True, blank=True, verbose_name='Дата возврата')
@@ -140,10 +140,10 @@ class BookInstance(models.Model):
 
 class Author(models.Model):
 
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    date_of_birth = models.DateField(null=True, blank=True)
-    date_of_death = models.DateField('died', null=True, blank=True)
+    first_name = models.CharField(max_length=100, verbose_name='Имя')
+    last_name = models.CharField(max_length=100, verbose_name='Фамилия')
+    date_of_birth = models.DateField(null=True, blank=True, verbose_name='Дата рождения')
+    date_of_death = models.DateField('Умер', null=True, blank=True,)
 
     class Meta:
         ordering = ['last_name', 'first_name']

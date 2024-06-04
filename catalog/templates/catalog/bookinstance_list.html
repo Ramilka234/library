@@ -61,7 +61,7 @@
     {% extends "base_generic.html" %}
 
     {% block content %}
-    <h1>Book Copies in Library</h1>
+    <h1>Копии книг в библиотеке</h1>
 
     <ul class="list">
       {% for bookinst in bookinstance_list %}
@@ -77,13 +77,13 @@
             <div class="borrower">- {{ bookinst.borrower }}</div>
             {% endif %}
             {% if perms.catalog.can_mark_returned %}
-            <div class="renew">- <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a></div>
+            <div class="renew">- <a href="{% url 'renew-book-librarian' bookinst.id %}">Обновить</a></div>
             {% endif %}
           {% endif %}
         </li>
       </a>
       {% empty %}
-      <li>There are no book copies available.</li>
+      <li>В наличии нет ни одного экземпляра книги.</li>
       {% endfor %}
     </ul>
 

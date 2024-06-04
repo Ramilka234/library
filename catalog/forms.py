@@ -8,7 +8,7 @@ from django import forms
 class RenewBookForm(forms.Form):
     """Form for a librarian to renew books."""
     renewal_date = forms.DateField(
-            help_text="Enter a date between now and 4 weeks (default 3).")
+            help_text="Введите дату от текущего момента до 4 недель (по умолчанию 3).")
 
     def clean_renewal_date(self):
         data = self.cleaned_data['renewal_date']
@@ -28,9 +28,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+    first_name = forms.CharField(max_length=30, required=False, help_text='Необязательный.')
+    last_name = forms.CharField(max_length=30, required=False, help_text='Необязательный.')
+    email = forms.EmailField(max_length=254, help_text='Требуемый. Укажите действительный адрес электронной почты.')
 
     class Meta:
         model = User
@@ -63,10 +63,10 @@ class ReserveBookForm(forms.ModelForm):
 
       # Check if a date is not in the past.
       if data < datetime.date.today():
-        raise ValidationError(_('Invalid date - renewal in past'))
+        raise ValidationError(_('Недействительная дата - продление в прошлом'))
 
       # Check if a date is in the allowed range (+4 weeks from today).
       if data > datetime.date.today() + datetime.timedelta(weeks=4):
-        raise ValidationError(_('Invalid date - renewal more than 4 weeks ahead'))
+        raise ValidationError(_('Недействительная дата - продление более чем на 4 недели вперед'))
 
       return data

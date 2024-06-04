@@ -62,16 +62,16 @@
 
 {% block content %}
 
-<h1>Language: {{ language.name }}</h1>
+<h1>Язык: {{ language.name }}</h1>
 
 <div style="margin-left:20px;margin-top:20px">
-<h4>Books in language</h4>
+<h4>Книги на языке</h4>
 
 <ul class="list">
   {% for copy in language.book_set.all %}
     <a href="{{ copy.get_absolute_url }}" class="item"><div class="title">{{ copy.title }}</div></a>
   {% empty %}
-  <li>There are no books in this language.</li>
+  <li>На этом языке нет книг.</li>
   {% endfor %}
 </ul>
 
@@ -85,10 +85,10 @@
   <hr>
   <ul class="sidebar-nav">
     {% if perms.catalog.change_language %}
-      <li><a href="{% url 'language-update' language.id %}">Update Language</a></li>
+      <li><a href="{% url 'language-update' language.id %}">Обновить язык</a></li>
     {% endif %}
     {% if not language.book_set.all and perms.catalog.delete_language %}
-      <li><a href="{% url 'language-delete' language.id %}">Delete Language</a></li>
+      <li><a href="{% url 'language-delete' language.id %}">Удалить язык</a></li>
     {% endif %}
     </ul>
   {% endif %}

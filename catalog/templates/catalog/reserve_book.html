@@ -1,7 +1,7 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Reserve Book: {{ book_instance.book.title }}</h1>
+  <h1>Резервная книга: {{ book_instance.book.title }}</h1>
   <form action="" method="post">
       {% csrf_token %}
       <table>
