@@ -12,7 +12,7 @@
 
 <div style="margin-left:20px;margin-top:20px">
 <h4>Копии</h4>
-{% if book.bookinstance_set.exists %}
+{% if book.bookinstance_set.exists and user.is_authenticated %}
     <p><a href="{% url 'reserve-book' book.bookinstance_set.first.pk %}">Зарезирвировать эту книгу</a></p>
   {% else %}
     <p>Эта книга не доступна для резервирования.</p>
