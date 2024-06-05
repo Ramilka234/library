@@ -4,11 +4,14 @@
     <h1>Заимствованные книги</h1>
 
     {% if bookinstance_list %}
-    <ul class="sidebar-nav nav flex-column">
+    <ul class="list" >
 
       {% for bookinst in bookinstance_list %}
       <li class="{% if bookinst.is_overdue %}text-danger{% endif %}">
-        <a href="{% url 'book-detail' bookinst.book.pk %}">{{bookinst.book.title}}</a> ({{ bookinst.due_back }}) ({{ bookinst.status }})
+        <a href="{% url 'book-detail' bookinst.book.pk %}" class="item {% if bookinst.is_overdue %}text-danger{% endif %}">
+          <div class="title">{{ bookinst.book.title }}</div></a>
+        <div class="due-back">: {{ bookinst.due_back }}</div>
+        <div class="status">{{ bookinst.get_status_display }}</div>
       </li>
       {% endfor %}
     </ul>
